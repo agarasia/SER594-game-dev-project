@@ -10,6 +10,8 @@ namespace SoulsLike
         public bool hasLeftHandWeapon = true;
         public Weapon leftHandWeapon;
 
+        public GameObject parryCollider;
+
         StateManager states;
 
         public void Init(StateManager st)
@@ -20,6 +22,11 @@ namespace SoulsLike
             EquipWeapon(leftHandWeapon, true);
 
             CloseAllDamageColliders();
+
+            ParryCollider pr = parryCollider.GetComponent<ParryCollider>();
+            pr.InitPlayer(st);
+            CloseParryCollider();
+
         }
 
 
@@ -50,6 +57,18 @@ namespace SoulsLike
 
             if (leftHandWeapon.weaponHook != null)
                 leftHandWeapon.weaponHook.CloseDamageColliders();
+        }
+
+        public void CloseParryCollider()
+        {
+            parryCollider.SetActive(false);
+
+        }
+
+        public void OpenParryCollider()
+        {
+            parryCollider.SetActive(true);
+
         }
 
         [System.Serializable]

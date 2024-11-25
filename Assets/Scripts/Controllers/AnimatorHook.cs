@@ -104,15 +104,67 @@ namespace SoulsLike
 
         public void OpenDamageColliders()
         {
-            if (stateManager == null) return;
+            if (stateManager)
+            {
+                stateManager.inventoryManager.OpenAllDamageColliders();
+            }
 
-            stateManager.inventoryManager.OpenAllDamageColliders();
+
+            OpenParryFlag();
         }
 
         public void CloseDamageColliders()
         {
-            if (stateManager == null) return;
-            stateManager.inventoryManager.CloseAllDamageColliders();
+            if (stateManager)
+            {
+                stateManager.inventoryManager.CloseAllDamageColliders();
+            }
+
+            CloseParryFlag();
+        }
+
+        public void OpenParryCollider()
+        {
+            if (stateManager == null)
+            {
+                return;
+            }
+            stateManager.inventoryManager.OpenParryCollider();
+        }
+
+        public void CloseParryCollider()
+        {
+            if (stateManager == null)
+            {
+                return;
+            }
+            stateManager.inventoryManager.CloseParryCollider();
+        }
+
+        public void OpenParryFlag()
+        {
+            if (stateManager)
+            {
+                stateManager.parriedIsOn = true;
+            }
+            if (e_states)
+            {
+                e_states.parriedIsOn = true;
+            }
+
+        }
+
+        public void CloseParryFlag()
+        {
+            if (stateManager)
+            {
+                stateManager.parriedIsOn = false;
+            }
+            if (e_states)
+            {
+                e_states.parriedIsOn = false;
+            }
+
         }
     }
 }

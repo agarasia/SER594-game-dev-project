@@ -42,25 +42,24 @@ namespace SoulsLike
 
             Action rb = GetAction(ActionInput.rb);
             Action rt = GetAction(ActionInput.rt);
-<<<<<<< Updated upstream
-            rb.targetAnimation = r_w.GetAction(r_w.actions, ActionInput.rb).targetAnimation;
-            rt.targetAnimation = r_w.GetAction(r_w.actions, ActionInput.rt).targetAnimation;
-
-            Action lb = GetAction(ActionInput.lb);
-            Action lt = GetAction(ActionInput.lt);
-            lb.targetAnimation = l_w.GetAction(l_w.actions, ActionInput.rb).targetAnimation;
-            lt.targetAnimation = l_w.GetAction(l_w.actions, ActionInput.rt).targetAnimation;
-=======
 
             Action w_rb = r_w.GetAction(r_w.actions, ActionInput.rb);
 
             rb.targetAnimation = w_rb.targetAnimation;
             rb.type = w_rb.type;
+            rb.canBeParried = w_rb.canBeParried;
+            rb.changeSpeed = w_rb.changeSpeed;
+            rb.animSpeed = w_rb.animSpeed;
+
+
 
             Action w_rt = r_w.GetAction(r_w.actions, ActionInput.rb);
             rt.targetAnimation = w_rt.targetAnimation;
             rt.type = w_rt.type;
-             
+            rt.canBeParried = w_rt.canBeParried;
+            rt.changeSpeed = w_rt.changeSpeed;
+            rt.animSpeed = w_rt.animSpeed;
+
 
             Action lb = GetAction(ActionInput.lb);
             Action lt = GetAction(ActionInput.lt);
@@ -68,11 +67,16 @@ namespace SoulsLike
             Action w_lb = l_w.GetAction(l_w.actions, ActionInput.rb);
             lb.targetAnimation = w_lb.targetAnimation;
             lb.type = w_lb.type;
+            lb.canBeParried = w_lb.canBeParried;
+            lb.changeSpeed = w_lb.changeSpeed;
+            lb.animSpeed = w_lb.animSpeed;
 
             Action w_lt = l_w.GetAction(l_w.actions, ActionInput.rt);
             lt.targetAnimation = w_lt.targetAnimation;
             lt.type = w_lb.type;
->>>>>>> Stashed changes
+            lt.canBeParried = w_lt.canBeParried;
+            lt.changeSpeed = w_lt.changeSpeed;
+            lt.animSpeed = w_lt.animSpeed;
 
             if (l_w.LeftHandMirror)
             {
@@ -102,10 +106,7 @@ namespace SoulsLike
                 Action a = GetAction((ActionInput)i);
                 a.targetAnimation = null;
                 a.mirror = false;
-<<<<<<< Updated upstream
-=======
                 a.type = ActionType.attack;
->>>>>>> Stashed changes
             }
         }
 
@@ -163,7 +164,7 @@ namespace SoulsLike
 
     public enum ActionType
     {
-        attack,block,spells,parry
+        attack, block, spells, parry
     }
 
     [System.Serializable]
@@ -174,10 +175,10 @@ namespace SoulsLike
         public ActionType type;
         public string targetAnimation;
         public bool mirror = false;
-<<<<<<< Updated upstream
-=======
-    
->>>>>>> Stashed changes
+        public bool canBeParried = true;
+        public bool changeSpeed = false;
+        public float animSpeed = 1;
+
     }
 
     [System.Serializable]

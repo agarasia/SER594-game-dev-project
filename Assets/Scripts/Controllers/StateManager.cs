@@ -26,6 +26,8 @@ namespace SoulsLike
         public bool inAction;
         public bool canMove;
         public bool usingItem;
+        public bool canBeParried;
+        public bool parriedIsOn;
         public bool isBlocking;
         public bool isLeftHand;
 
@@ -33,6 +35,7 @@ namespace SoulsLike
         public EnemyTarget lockOnTarget;
         public Transform lockOnTransform;
         public AnimationCurve roll_curve;
+        public EnemyStates parryTarget;
 
         [Header("Stats")]
         public float moveSpeed = 3;
@@ -41,6 +44,7 @@ namespace SoulsLike
         public float distanceFromGround = .3f;
         public bool isTwoHanded;
         public float rollSpeed = 1;
+        public float parryOffset = 1.4f;
 
         [HideInInspector]
         public AnimatorHook animatorHook;
@@ -109,20 +113,15 @@ namespace SoulsLike
         {
             delta = d;
 
-            isBlocking =false;
+            isBlocking = false;
             usingItem = animator.GetBool("interacting");
             DetectAction();
-<<<<<<< Updated upstream
+            DetectItemAction();
             inventoryManager.rightHandWeapon.weaponModel.SetActive(!usingItem);
 
-=======
-            DetectItemAction();            
-            inventoryManager.rightHandWeapon.weaponModel.SetActive(!usingItem);
-
-            animator.SetBool("blocking", isBlocking);
+            animator.SetBool("block", isBlocking);
             animator.SetBool("isLeft", isLeftHand);
 
->>>>>>> Stashed changes
             if (inAction)
             {
                 animator.applyRootMotion = true;
@@ -224,13 +223,7 @@ namespace SoulsLike
             if (rb == false && rt == false && lb == false && lt == false)
                 return;
 
-<<<<<<< Updated upstream
-            string targetAnimation = null;
 
-
-=======
-            
->>>>>>> Stashed changes
             Action slot = actionManager.GetActionSlot(this);
             if (slot == null)
                 return;
@@ -249,15 +242,17 @@ namespace SoulsLike
                     ParryAction(slot);
                     break;
                 default:
-                    break;               
+                    break;
 
             }
-            
-            
+
+
         }
 
         void AttackAction(Action slot)
         {
+            if (CheckForParry(slot))
+                return;
             string targetAnimation = null;
             targetAnimation = slot.targetAnimation;
 
@@ -266,11 +261,68 @@ namespace SoulsLike
 
             canMove = false;
             inAction = true;
+
+            float targetSpeed = 1;
+            if (slot.changeSpeed)
+            {
+                targetSpeed = slot.animSpeed;
+                if (targetSpeed == 0)
+                {
+                    targetSpeed = 1;
+                }
+            }
+
+            canBeParried = slot.canBeParried;
+            animator.SetFloat("animSpeed", targetSpeed);
             animator.SetBool("mirror", slot.mirror);
-<<<<<<< Updated upstream
-=======
             animator.CrossFade(targetAnimation, 0.2f);
             //rigidBody.velocity = Vector3.zero;
+        }
+
+        bool CheckForParry(Action slot)
+        {
+
+            if (parryTarget == null)
+                return false;
+
+            float dis = Vector3.Distance(parryTarget.transform.position, transform.position);
+
+            if (dis > 3)
+            {
+                return false;
+            }
+
+            Vector3 dir = parryTarget.transform.position - transform.position;
+            dir.Normalize();
+            dir.y = 0;
+            float angle = Vector3.Angle(transform.forward, dir);
+            if (angle < 60)
+            {
+                Vector3 targetPosition = -dir * parryOffset;
+                targetPosition += parryTarget.transform.position;
+                transform.position = targetPosition;
+
+                if (dir == Vector3.zero)
+                {
+                    dir = -parryTarget.transform.forward;
+                }
+
+                Quaternion eRotation = Quaternion.LookRotation(-dir);
+                Quaternion OurRot = Quaternion.LookRotation(dir);
+
+                parryTarget.transform.rotation = eRotation;
+                transform.rotation = OurRot;
+
+                parryTarget.IsGettingParried();
+                canMove = false;
+                inAction = true;
+                animator.SetBool("mirror", slot.mirror);
+                animator.CrossFade("parry_attack", 0.2f);
+                return true;
+            }
+
+            return false;
+
         }
 
         void BlockAction(Action slot)
@@ -288,10 +340,22 @@ namespace SoulsLike
             if (string.IsNullOrEmpty(targetAnimation))
                 return;
 
+            float targetSpeed = 1;
+            if (slot.changeSpeed)
+            {
+                targetSpeed = slot.animSpeed;
+                if (targetSpeed == 0)
+                {
+                    targetSpeed = 1;
+                }
+            }
+
+            animator.SetFloat("animSpeed", targetSpeed);
+
+            canBeParried = slot.canBeParried;
             canMove = false;
             inAction = true;
             animator.SetBool("mirror", slot.mirror);
->>>>>>> Stashed changes
             animator.CrossFade(targetAnimation, 0.2f);
             //rigidBody.velocity = Vector3.zero;
         }
@@ -383,6 +447,11 @@ namespace SoulsLike
             canMove = false;
             inAction = true;
             animator.CrossFade("DodgeRolls", 0.2f);
+
+        }
+
+        public void IsGettingParried()
+        {
 
         }
     }
