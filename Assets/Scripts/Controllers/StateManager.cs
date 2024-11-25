@@ -26,6 +26,8 @@ namespace SoulsLike
         public bool inAction;
         public bool canMove;
         public bool usingItem;
+        public bool isBlocking;
+        public bool isLeftHand;
 
         [Header("Other")]
         public EnemyTarget lockOnTarget;
@@ -107,12 +109,20 @@ namespace SoulsLike
         {
             delta = d;
 
+            isBlocking =false;
             usingItem = animator.GetBool("interacting");
-
-            DetectItemAction();
             DetectAction();
+<<<<<<< Updated upstream
             inventoryManager.rightHandWeapon.weaponModel.SetActive(!usingItem);
 
+=======
+            DetectItemAction();            
+            inventoryManager.rightHandWeapon.weaponModel.SetActive(!usingItem);
+
+            animator.SetBool("blocking", isBlocking);
+            animator.SetBool("isLeft", isLeftHand);
+
+>>>>>>> Stashed changes
             if (inAction)
             {
                 animator.applyRootMotion = true;
@@ -190,7 +200,7 @@ namespace SoulsLike
 
         public void DetectItemAction()
         {
-            if (canMove == false || usingItem)
+            if (canMove == false || usingItem || isBlocking)
             { return; }
 
             if (itemInput == false)
@@ -214,12 +224,41 @@ namespace SoulsLike
             if (rb == false && rt == false && lb == false && lt == false)
                 return;
 
+<<<<<<< Updated upstream
             string targetAnimation = null;
 
 
+=======
+            
+>>>>>>> Stashed changes
             Action slot = actionManager.GetActionSlot(this);
             if (slot == null)
                 return;
+
+            switch (slot.type)
+            {
+                case ActionType.attack:
+                    AttackAction(slot);
+                    break;
+                case ActionType.block:
+                    BlockAction(slot);
+                    break;
+                case ActionType.spells:
+                    break;
+                case ActionType.parry:
+                    ParryAction(slot);
+                    break;
+                default:
+                    break;               
+
+            }
+            
+            
+        }
+
+        void AttackAction(Action slot)
+        {
+            string targetAnimation = null;
             targetAnimation = slot.targetAnimation;
 
             if (string.IsNullOrEmpty(targetAnimation))
@@ -228,6 +267,31 @@ namespace SoulsLike
             canMove = false;
             inAction = true;
             animator.SetBool("mirror", slot.mirror);
+<<<<<<< Updated upstream
+=======
+            animator.CrossFade(targetAnimation, 0.2f);
+            //rigidBody.velocity = Vector3.zero;
+        }
+
+        void BlockAction(Action slot)
+        {
+            isBlocking = true;
+            isLeftHand = slot.mirror;
+
+        }
+
+        void ParryAction(Action slot)
+        {
+            string targetAnimation = null;
+            targetAnimation = slot.targetAnimation;
+
+            if (string.IsNullOrEmpty(targetAnimation))
+                return;
+
+            canMove = false;
+            inAction = true;
+            animator.SetBool("mirror", slot.mirror);
+>>>>>>> Stashed changes
             animator.CrossFade(targetAnimation, 0.2f);
             //rigidBody.velocity = Vector3.zero;
         }

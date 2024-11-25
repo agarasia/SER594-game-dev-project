@@ -42,6 +42,7 @@ namespace SoulsLike
 
             Action rb = GetAction(ActionInput.rb);
             Action rt = GetAction(ActionInput.rt);
+<<<<<<< Updated upstream
             rb.targetAnimation = r_w.GetAction(r_w.actions, ActionInput.rb).targetAnimation;
             rt.targetAnimation = r_w.GetAction(r_w.actions, ActionInput.rt).targetAnimation;
 
@@ -49,6 +50,29 @@ namespace SoulsLike
             Action lt = GetAction(ActionInput.lt);
             lb.targetAnimation = l_w.GetAction(l_w.actions, ActionInput.rb).targetAnimation;
             lt.targetAnimation = l_w.GetAction(l_w.actions, ActionInput.rt).targetAnimation;
+=======
+
+            Action w_rb = r_w.GetAction(r_w.actions, ActionInput.rb);
+
+            rb.targetAnimation = w_rb.targetAnimation;
+            rb.type = w_rb.type;
+
+            Action w_rt = r_w.GetAction(r_w.actions, ActionInput.rb);
+            rt.targetAnimation = w_rt.targetAnimation;
+            rt.type = w_rt.type;
+             
+
+            Action lb = GetAction(ActionInput.lb);
+            Action lt = GetAction(ActionInput.lt);
+
+            Action w_lb = l_w.GetAction(l_w.actions, ActionInput.rb);
+            lb.targetAnimation = w_lb.targetAnimation;
+            lb.type = w_lb.type;
+
+            Action w_lt = l_w.GetAction(l_w.actions, ActionInput.rt);
+            lt.targetAnimation = w_lt.targetAnimation;
+            lt.type = w_lb.type;
+>>>>>>> Stashed changes
 
             if (l_w.LeftHandMirror)
             {
@@ -67,6 +91,7 @@ namespace SoulsLike
             {
                 Action a = GetAction(w.twoHandedActions[i].input);
                 a.targetAnimation = w.twoHandedActions[i].targetAnimation;
+                a.type = w.twoHandedActions[i].type;
             }
         }
 
@@ -77,6 +102,10 @@ namespace SoulsLike
                 Action a = GetAction((ActionInput)i);
                 a.targetAnimation = null;
                 a.mirror = false;
+<<<<<<< Updated upstream
+=======
+                a.type = ActionType.attack;
+>>>>>>> Stashed changes
             }
         }
 
@@ -130,12 +159,25 @@ namespace SoulsLike
         rb, rt, lb, lt, x
     }
 
+
+
+    public enum ActionType
+    {
+        attack,block,spells,parry
+    }
+
     [System.Serializable]
+
     public class Action
     {
         public ActionInput input;
+        public ActionType type;
         public string targetAnimation;
         public bool mirror = false;
+<<<<<<< Updated upstream
+=======
+    
+>>>>>>> Stashed changes
     }
 
     [System.Serializable]
